@@ -6,3 +6,5 @@ langchain_community
 PyPDF2
 langchain
 pypdf
+langchain-chroma
+sentence-transformers
