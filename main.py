@@ -5,11 +5,27 @@ from langchain_community.embeddings.sentence_transformer import (
     SentenceTransformerEmbeddings,
 )
 from langchain_chroma import Chroma
+from langchain.prompts import PromptTemplate
+from langchain.chains import LLMChain
+from langchain_openai import ChatOpenAI
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
+from fastapi.middleware.cors import CORSMiddleware
+import os
+
+os.environ["OPENAI_API_KEY"] = ""
 
 # Create an instance of the FastAPI class
 app = FastAPI()
 
-# create the open-source embedding function
+app.add_middleware( CORSMiddleware, 
+                    allow_origins=["*"],
+                    allow_credentials=True, 
+                    allow_methods=["*"], 
+                    allow_headers=["*"], 
+                    )
+
+
 embedding_function = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
 
 
@@ -32,7 +48,40 @@ async def upload_file(file: UploadFile = File(...)):
     docs = loader.load_and_split(text_splitter=text_splitter) 
     
     db = Chroma.from_documents(docs, embedding_function, persist_directory="./chroma_db")
+    #if db existed then add new file to db otherwiese create new add.
     
-    docs = db.similarity_search("Who is Ubaid")    
+    return {"message":  "File is upload successfully"}
+
+
+
+@app.get("/search")
+async def search(query: str):
+    db = Chroma(persist_directory="./chroma_db", embedding_function=embedding_function).as_retriever()
     
-    return {"contents":  docs[0].page_content}
+    #create a llm chain first
+    llm = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0, api_key="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")
+    
+    prompt_template = """Use the following pieces of context to answer the question at the end. 
+    If you don't know the answer, just say that you don't know, don't try to make up an answer.
+    Use three sentences maximum. Keep the answer as concise as possible. 
+    Always say "thanks for asking!" at the end of the answer.
+    {context}
+    Question: {question}
+    Helpful Answer:"""
+    
+    prompt = PromptTemplate(
+    input_variables=["context", "question"],
+    template=prompt_template,
+    )
+    llm_chain = prompt | llm | StrOutputParser()
+    
+    rag_chain = ({"context": db, "question": RunnablePassthrough()}| llm_chain)
+    
+    ans = rag_chain.invoke(query)
+    
+    return ans  
+
+
+
+
+    

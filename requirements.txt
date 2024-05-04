@@ -8,3 +8,4 @@ langchain
 pypdf
 langchain-chroma
 sentence-transformers
+langchain_openai
