@@ -17,7 +17,10 @@
 ### Running the project:
 
 1. clone the repository: `git clone https://github.com/Ubaidb936/chatWithDocs.git`
-2. Cd into QAGenius:  `chatWithDocs`
+2. Cd into chatWithDocs:  `cd chatWithDocs`
 3. create a new virtual env using this command `python3 -m venv venv` for linux/mac and `python -m venv venv` for windows.
 4. to activate the venv run source `venv/bin/activate` for macOS
 5. run `pip install -r requirements.txt` to install dependencies...
+6. run `uvicorn main:app --reload` to start the backend i.e FASTAPI
+7. cd into GUI: `cd gui`
+8. run `npm start` to start frontend
