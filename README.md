@@ -1,4 +1,4 @@
-<h1 align="center"> <p>ChatwithDocs 📚</p></h1>
+<h1 align="left"> <p>ChatwithDocs 📄 </p></h1>
 <h3 align="left">
     <p align="left"> 
         ChatwithDocs gives you the power to chat with your documents using LLMS and vector databases. 
