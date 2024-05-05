@@ -15,6 +15,8 @@ import os
 
 os.environ["OPENAI_API_KEY"] = ""
 
+OPEN_AI_API_KEY = ""
+
 # Create an instance of the FastAPI class
 app = FastAPI()
 
@@ -59,7 +61,7 @@ async def search(query: str):
     db = Chroma(persist_directory="./chroma_db", embedding_function=embedding_function).as_retriever()
     
     #create a llm chain first
-    llm = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0, api_key="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")
+    llm = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0, api_key = OPEN_AI_API_KEY )
     
     prompt_template = """Use the following pieces of context to answer the question at the end. 
     If you don't know the answer, just say that you don't know, don't try to make up an answer.
