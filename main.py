@@ -1,4 +1,6 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, Request, UploadFile, File
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.embeddings.sentence_transformer import (
@@ -12,13 +14,15 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from fastapi.middleware.cors import CORSMiddleware
 import os
+import config
 
-os.environ["OPENAI_API_KEY"] = ""
 
-OPEN_AI_API_KEY = ""
 
 # Create an instance of the FastAPI class
 app = FastAPI()
+
+
+app.mount("/static", StaticFiles(directory="gui/build/static"), name="static")
 
 app.add_middleware( CORSMiddleware, 
                     allow_origins=["*"],
@@ -61,7 +65,7 @@ async def search(query: str):
     db = Chroma(persist_directory="./chroma_db", embedding_function=embedding_function).as_retriever()
     
     #create a llm chain first
-    llm = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0, api_key = OPEN_AI_API_KEY )
+    llm = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0, api_key = config.OPEN_AI_API_KEY)
     
     prompt_template = """Use the following pieces of context to answer the question at the end. 
     If you don't know the answer, just say that you don't know, don't try to make up an answer.
@@ -83,6 +87,12 @@ async def search(query: str):
     
     return ans  
 
+
+@app.get("/")
+async def read_index(request: Request) -> HTMLResponse:
+    with open("gui/build/index.html", "r") as f:
+        html_content = f.read()
+    return HTMLResponse(content=html_content, status_code=200)
 
 
 
