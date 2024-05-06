@@ -8,19 +8,17 @@
 
 <h4 align="left">
     <p align="left"> 
-        Tools used: Python, FastAPI, React, chroma vectorDB, open AI LLM, langchain
+        Tools used: Python, FastAPI, React, Chroma vectorDB, Open AI LLM, Langchain, Docker
    </p>
 </h3>
 
 
 
-### Running the project:
+### Running the project on your local system:
 
 1. clone the repository: `git clone https://github.com/Ubaidb936/chatWithDocs.git`
 2. Cd into chatWithDocs:  `cd chatWithDocs`
-3. create a new virtual env using this command `python3 -m venv venv` for linux/mac and `python -m venv venv` for windows.
-4. to activate the venv run source `venv/bin/activate` for macOS
-5. run `pip install -r requirements.txt` to install dependencies...
-6. run `uvicorn main:app --reload` to start the backend i.e FASTAPI
-7. cd into GUI: `cd gui`
-8. run `npm start` to start frontend
+3. set your open AI key in config.py
+4. Ensure docker is installed in your system
+5. run `docker build -t my-fastapi-react-app .` to create docker image.
+6. run `docker run -p 8000:8000 my-fastapi-react-app` to run the image.
