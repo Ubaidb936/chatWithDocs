@@ -14,7 +14,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from fastapi.middleware.cors import CORSMiddleware
 import os
-import config
+import config    
 
 
 
@@ -64,7 +64,7 @@ async def upload_file(file: UploadFile = File(...)):
 async def search(query: str):
     db = Chroma(persist_directory="./chroma_db", embedding_function=embedding_function).as_retriever()
     
-    #create a llm chain first
+    #create a llm chain first;
     llm = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0, api_key = config.OPEN_AI_API_KEY)
     
     prompt_template = """Use the following pieces of context to answer the question at the end. 
