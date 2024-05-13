@@ -1,3 +1,2 @@
 
 ##Set your open ai key here.....
-OPEN_AI_API_KEY = ""

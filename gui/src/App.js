@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaFileUpload } from "react-icons/fa";
 import "./App.css";
 
@@ -6,7 +6,16 @@ const App = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [textValue, setTextValue] = useState("");
   const [fileUploaded, setFileUploaded] = useState(false);
+  const [uploading, setUploading] = useState(false); // State to track upload status
   const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+
+    fetch("http://localhost:8000/reset", {
+        method: "GET"
+      })
+    
+  },[]);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -19,6 +28,8 @@ const App = () => {
       const formData = new FormData();
       formData.append("file", file);
 
+      setUploading(true); // Set uploading to true when starting upload
+
       fetch("http://localhost:8000/upload", {
         method: "POST",
         body: formData,
@@ -27,9 +38,11 @@ const App = () => {
         .then((data) => {
           console.log("File uploaded successfully:", data);
           setFileUploaded(true);
+          setUploading(false); // Reset uploading state after upload is complete
         })
         .catch((error) => {
           console.error("Error uploading file:", error);
+          setUploading(false); // Reset uploading state on error
         });
     }
   };
@@ -53,8 +66,6 @@ const App = () => {
         .catch((error) => {
           console.error("Error:", error);
         });
-
-      // Add new message to state
 
       setTextValue(""); // Clear the text input after sending
     }
@@ -85,7 +96,11 @@ const App = () => {
                 onChange={handleFileChange}
                 style={{ display: "none" }}
               />
-              <FaFileUpload />
+              {uploading ? (
+                <div className="uploadIndicator">Uploading...</div>
+              ) : (
+                <FaFileUpload />
+              )}
             </label>
           )}
           <input

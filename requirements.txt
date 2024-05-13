@@ -1,11 +1,13 @@
 fastapi
 uvicorn
-pydantic
-python-multipart
+# pydantic
+# python-multipart
 langchain_community
-PyPDF2
+# PyPDF2
 langchain
 pypdf
 langchain-chroma
-sentence-transformers
+# sentence-transformers
 langchain_openai
+openai
+tiktoken

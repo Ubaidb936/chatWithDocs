@@ -104,3 +104,17 @@ button {
 button:hover {
   background-color: #0a6640;
 }
+
+.uploadIndicator {
+  display: inline-block;
+  animation: spin 0.7s infinite linear;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
