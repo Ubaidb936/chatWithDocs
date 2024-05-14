@@ -40,7 +40,7 @@ app = FastAPI()
 
 
 
-# app.mount("/static", StaticFiles(directory="gui/build/static"), name="static")
+app.mount("/static", StaticFiles(directory="gui/build/static"), name="static")
 
 app.add_middleware( CORSMiddleware, 
                     allow_origins=["*"],
@@ -185,18 +185,11 @@ async def reset():
     
     
     
-    
-    
-    
-    
-    
-
-
-# @app.get("/")
-# async def read_index(request: Request) -> HTMLResponse:
-#     with open("gui/build/index.html", "r") as f:
-#         html_content = f.read()
-#     return HTMLResponse(content=html_content, status_code=200)
+@app.get("/")
+async def read_index(request: Request) -> HTMLResponse:
+    with open("gui/build/index.html", "r") as f:
+        html_content = f.read()
+    return HTMLResponse(content=html_content, status_code=200)
 
 
 

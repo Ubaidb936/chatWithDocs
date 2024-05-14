@@ -10,12 +10,10 @@ const App = () => {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-
     fetch("http://localhost:8000/reset", {
-        method: "GET"
-      })
-    
-  },[]);
+      method: "GET",
+    });
+  }, []);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
