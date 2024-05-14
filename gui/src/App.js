@@ -10,7 +10,7 @@ const App = () => {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8000/reset", {
+    fetch("/reset", {
       method: "GET",
     });
   }, []);
@@ -28,7 +28,7 @@ const App = () => {
 
       setUploading(true); // Set uploading to true when starting upload
 
-      fetch("http://localhost:8000/upload", {
+      fetch("/upload", {
         method: "POST",
         body: formData,
       })
@@ -53,7 +53,7 @@ const App = () => {
     if (textValue) {
       setMessages((prevMessages) => [...prevMessages, textValue]);
       // Send text message to server
-      fetch(`http://localhost:8000/search?query=${textValue}`, {
+      fetch(`/search?query=${textValue}`, {
         method: "GET",
       })
         .then((response) => response.json())
