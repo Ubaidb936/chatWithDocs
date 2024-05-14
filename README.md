@@ -20,5 +20,5 @@
 2. Cd into chatWithDocs:  `cd chatWithDocs`
 3. set your open AI key in config.py
 4. Ensure docker is installed in your system
-5. run `docker build -t my-fastapi-react-app .` to create docker image.
-6. run `docker run -p 8000:8000 my-fastapi-react-app` to run the image.
+5. run `docker build -t chatDocs.` to create docker image.
+6. run `docker run -p 8000:8000 chatDocs` to run the image.
