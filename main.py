@@ -14,9 +14,7 @@ from langchain_core.messages import HumanMessage
 from fastapi.middleware.cors import CORSMiddleware
 import os
 import config    
-import shutil
-import pdb
-import time
+
 
 
 # path where the vector db is stored
@@ -54,6 +52,7 @@ app.add_middleware( CORSMiddleware,
 
 def create_chain(file: UploadFile):
     
+    
     #loading text and splitting the text
     loader = PyPDFLoader(file.filename)
     text_splitter = RecursiveCharacterTextSplitter(
@@ -66,14 +65,13 @@ def create_chain(file: UploadFile):
     
     # storing the splits on the vector DB....
     
-    
-    db = Chroma.from_documents(docs, embedding_function, persist_directory=vector_db_path)
-    
-    # db._client.reset
-            
+    if os.path.exists(vector_db_path):
+        db = Chroma(persist_directory=vector_db_path, embedding_function=embedding_function)
+        db.add_documents(docs)
+    else:
+        db = Chroma.from_documents(docs, embedding_function, persist_directory=vector_db_path)    
         
-    
-    
+
     retriever = db.as_retriever()
     
     
@@ -111,11 +109,17 @@ def create_chain(file: UploadFile):
     question_answer_chain = create_stuff_documents_chain(llm, qa_prompt)
 
     
-    
     return create_retrieval_chain(history_aware_retriever, question_answer_chain)
 
 
-## Upload the file to the vector db
+
+
+
+
+
+
+
+## Agent Endpoint
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     
@@ -131,17 +135,26 @@ async def upload_file(file: UploadFile = File(...)):
         buffer.write(await file.read())
     
     rag_chain = create_chain(file) 
+    
+    os.remove(file.filename)
 
     
     return {"message":  "File is upload successfully"}
 
+
+
+
+
+## Chat EndPoint
 @app.get("/search")
 async def search(query: str):
     
     global rag_chain
     
+    global chat_history
+    
     if rag_chain is None:
-        return "Please upload the file first."
+        return "Please upload the file to chat."
 
     ai_msgs = rag_chain.invoke({"input": query, "chat_history": chat_history})
     chat_history.extend([HumanMessage(content=query), ai_msgs["answer"]])
@@ -149,21 +162,26 @@ async def search(query: str):
     return ai_msgs["answer"]
 
 
+
+
+
 @app.get("/reset")
 async def reset():
     
     global rag_chain
     
+    global chat_history
     
     rag_chain = None
     
+    chat_history = []
     
-    db = Chroma(persist_directory=vector_db_path, embedding_function=embedding_function)
+    if os.path.exists(vector_db_path):
+        db = Chroma(persist_directory=vector_db_path, embedding_function=embedding_function)
+        db.delete_collection()
     
-    db._client.
-    
-    
-    return {"message": "all the"}
+
+    return {"message": "Reset Done.."}
     
     
     
